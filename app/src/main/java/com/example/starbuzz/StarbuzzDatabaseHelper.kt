@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 const val DB_NAME = "starbuzz"
-const val DB_VERSION = 1
+const val DB_VERSION = 2
 
 
 class StarbuzzDatabaseHelper(context: Context) :
@@ -57,7 +57,7 @@ class StarbuzzDatabaseHelper(context: Context) :
             )
         }
         if (oldVersion < 2) {
-
+            db!!.execSQL("ALTER TABLE DRINK ADD COLUMN FAVORITE NUMERIC")
         }
     }
 }
