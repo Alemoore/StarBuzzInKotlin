@@ -31,4 +31,11 @@
         android:textStyle="italic">
     </TextView>
 
+    <CheckBox
+        android:id="@+id/favorite"
+        android:text="@string/favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onClickFavorite"/>
+
 </LinearLayout>
