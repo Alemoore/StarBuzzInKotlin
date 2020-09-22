@@ -4,9 +4,11 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.CheckBox
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_drink.*
 
@@ -52,5 +54,35 @@ class DrinkActivity : AppCompatActivity() {
 
     companion object {
         const val DRINKID = "DrinkId"
+    }
+
+    @Suppress("DEPRECATION")
+    private inner class UpdateDrinkTask: AsyncTask<Int, Unit, Boolean>() {
+        private lateinit var drinkValues: ContentValues
+
+        override fun onPreExecute() {
+            val favorite: CheckBox = findViewById(R.id.favorite)
+            drinkValues = ContentValues()
+            drinkValues.put("FAVORITE", favorite.isChecked)
+        }
+
+        override fun doInBackground(vararg p0: Int?): Boolean {
+            val drinkId = p0[0]
+            val starbuzzDatabaseHelper = StarbuzzDatabaseHelper(this@DrinkActivity)
+            try {
+                val db = starbuzzDatabaseHelper.writableDatabase
+                db.update("DRINK", drinkValues, "_id = ?", arrayOf(drinkId.toString()))
+                db.close()
+                return true
+            } catch (e: SQLiteException) {
+                return false
+            }
+        }
+
+        override fun onPostExecute(result: Boolean?) {
+            if (!result!!) {
+                Toast.makeText(this@DrinkActivity, "Database unavailable", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
